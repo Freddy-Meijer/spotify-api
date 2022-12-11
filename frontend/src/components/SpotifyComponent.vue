@@ -2,12 +2,12 @@
 import axios from "axios";
 import {onBeforeMount, ref, watch} from "vue";
 import { useSpotifyStore } from "@/stores/spotify";
+import ListResults from "@/components/ListResults.vue";
 
 const spotifyStore = useSpotifyStore();
 
 const accessToken = ref<string>("");
 const refreshToken = ref<string>("");
-const searchResults = ref<object>({});
 
 const login = () => {
   location.href = "http://localhost:3000/spotify_login";
@@ -23,8 +23,9 @@ const search = async (searchString: string) => {
       },
     });
     if (results) {
-      console.log(results);
-      searchResults.value = results.data.albums;
+      spotifyStore.$patch({
+        spotifySearchResults: results.data
+      })
     }
   } catch (error: any) {
     console.log(error);
@@ -84,6 +85,10 @@ onBeforeMount(async () => {
     >
       Login to Spotify
     </div>
+    <ListResults
+      :results="spotifyStore.spotifySearchResults"
+      v-if="Object.keys(spotifyStore.spotifySearchResults).length"
+    />
   </div>
 </template>
 
