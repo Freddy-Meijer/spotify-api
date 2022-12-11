@@ -1,0 +1,13 @@
+@import "./variables";
+
+html, body {
+  min-height: 100vh;
+}
+
+#app {
+    min-height: 100vh;
+  #wrapper {
+    background-color: rgb(25, 20, 20);
+    min-height: 100vh;
+  }
+}
