@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AlbumList from "@/components/AlbumList.vue";
+import TracksList from "@/components/TracksList.vue";
 
 const props = defineProps<{
   results: object;
@@ -9,6 +10,7 @@ const props = defineProps<{
 <template>
   <section id="results">
     <AlbumList :albums="props.results.albums.items" />
+    <TracksList :tracks="props.results.tracks.items" />
   </section>
 </template>
 
