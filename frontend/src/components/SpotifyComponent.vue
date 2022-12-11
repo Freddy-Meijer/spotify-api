@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
-import {onBeforeMount, ref, watch} from "vue";
+import {onBeforeMount, ref, watchEffect} from "vue";
 import { useSpotifyStore } from "@/stores/spotify";
 import ListResults from "@/components/ListResults.vue";
 
@@ -11,6 +11,12 @@ const refreshToken = ref<string>("");
 
 const login = () => {
   location.href = "http://localhost:3000/spotify_login";
+};
+
+const logout =() => {
+  document.cookie = "spotify=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  spotifyStore.$reset()
+
 };
 
 const search = async (searchString: string) => {
@@ -24,8 +30,8 @@ const search = async (searchString: string) => {
     });
     if (results) {
       spotifyStore.$patch({
-        spotifySearchResults: results.data
-      })
+        searchResults: results.data,
+      });
     }
   } catch (error: any) {
     console.log(error);
@@ -53,8 +59,9 @@ const updateToken = async () => {
   }
 };
 
-watch(spotifyStore.getSearchString(), (value) => {
-  search(value)
+watchEffect(() => {
+  const searchString = spotifyStore.getSearchString
+  if (searchString !== '') search(searchString)
 });
 
 onBeforeMount(async () => {
@@ -68,7 +75,7 @@ onBeforeMount(async () => {
     accessToken.value = spotify.access_token;
     refreshToken.value = spotify.refresh_token;
     spotifyStore.$patch({
-      isAuthenticated: true,
+      authenticated: true,
     });
   }
 });
@@ -76,17 +83,17 @@ onBeforeMount(async () => {
 
 <template>
   <div id="spotify">
-    <h2>SpotifySearch</h2>
     <div
       class="btn btn-primary"
-      v-if="!spotifyStore.isAuthenticated"
-      @click="login"
+      @click="spotifyStore.isAuthenticated ? logout() : login()"
     >
-      Login to Spotify
+      {{
+        spotifyStore.isAuthenticated ? "Logout of Spotify" : "Login to Spotify "
+      }}
     </div>
     <ListResults
-      :results="spotifyStore.spotifySearchResults"
-      v-if="Object.keys(spotifyStore.spotifySearchResults).length"
+      :results="spotifyStore.getSearchResults"
+      v-if="Object.keys(spotifyStore.getSearchResults).length"
     />
   </div>
 </template>

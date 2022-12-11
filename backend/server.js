@@ -45,9 +45,7 @@ server.get('/login_callback', async (req, res) => {
 
     // const expires = new Date(Date.now() + 3600 * 1000)
 
-    res.cookie('sp_at', token_response.data.access_token)
-        .cookie('sp_rt', token_response.data.refresh_token)
-        .cookie('spotify', JSON.stringify(token_response.data))
+    res.cookie('spotify', JSON.stringify(token_response.data))
         .redirect('http://localhost:5173/')
 })
 

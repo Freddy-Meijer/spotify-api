@@ -4,7 +4,7 @@ import { useSpotifyStore } from "@/stores/spotify";
 const  spotifyStore = useSpotifyStore()
 
 const emit = defineEmits<{
-  (e: "result", searchString: string): void;
+  (e: "recognition-result", searchString: string): void;
 }>();
 
 const speechRecognitionSupported = ref<boolean>(true);
@@ -41,7 +41,7 @@ const stopRecognition = () => {
 };
 
 const emitSearch = () => {
-  emit("result", result.value);
+  emit("recognition-result", result.value);
   spotifyStore.$patch({
     searchString: result.value,
   });
@@ -62,7 +62,7 @@ if (recognition.value) {
 </script>
 
 <template>
-  <div id="speech-recognition">
+  <div id="speech-recognition" v-if="spotifyStore.isAuthenticated">
     <h3>Search</h3>
     <div class="supported">
       <div class="input-group mb-3">
@@ -88,6 +88,7 @@ if (recognition.value) {
 @import "@/assets/variables.scss";
 
 #speech-recognition {
+  padding-top: 2rem;
   h3 {
     color: $spotify-green;
   }
