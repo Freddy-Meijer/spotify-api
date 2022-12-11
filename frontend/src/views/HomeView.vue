@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import TitleComponent from "@/components/TitleComponent.vue";
+import SearchSpotifyComponent from "@/components/SearchSpotifyComponent.vue";
 </script>
 
 <template>
@@ -7,6 +8,7 @@ import TitleComponent from "@/components/TitleComponent.vue";
     <div class="row">
       <div class="col">
         <TitleComponent text="HomeView" />
+        <SearchSpotifyComponent />
       </div>
     </div>
   </div>
