@@ -39,19 +39,19 @@ const stopRecognition = () => {
 };
 
 const emitSearch = () => {
-    emit("result", result.value);
-}
+  emit("result", result.value);
+};
 
 if (recognition.value) {
   recognition.value.onresult = (event: any) => {
     const transcript = event.results[0][0].transcript;
     result.value = transcript;
     listening.value = false;
-    emitSearch()
+    emitSearch();
   };
 
   recognition.value.onaudioend = () => {
-    listening.value = false
+    listening.value = false;
   };
 }
 </script>
