@@ -39,17 +39,16 @@ const search = async (searchString: string) => {
 };
 
 const updateToken = async () => {
-  console.log("old: ", accessToken.value);
-  console.log("refreshing token");
+  console.info("refreshing token");
   try {
     const newToken = await axios.post("http://localhost:3000/refresh_token", {
       refresh_token: refreshToken,
     });
     accessToken.value = newToken.data.access_token;
-    console.log("new:", accessToken.value);
+    console.info("successfully updated token");
     return true;
   } catch (e) {
-    console.error(e);
+    console.error("error updating token: ", e);
     return false;
   }
 };
