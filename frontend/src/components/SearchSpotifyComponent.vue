@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue"
+import { useSpotifyStore } from "@/stores/spotify";
+const  spotifyStore = useSpotifyStore()
 
 const emit = defineEmits<{
   (e: "result", searchString: string): void;
@@ -32,7 +34,7 @@ const startRecognition = () => {
 const stopRecognition = () => {
   try {
     recognition.value.stop();
-    listening.value = false
+    listening.value = false;
   } catch (e) {
     console.log("Could not stop recognition", e);
   }
@@ -40,6 +42,9 @@ const stopRecognition = () => {
 
 const emitSearch = () => {
   emit("result", result.value);
+  spotifyStore.$patch({
+    searchString: result.value,
+  });
 };
 
 if (recognition.value) {
@@ -70,7 +75,9 @@ if (recognition.value) {
           >
             {{ listening ? "Cancel" : "Voice Search" }}
           </span>
-          <span class="input-group-text" v-else @click="emitSearch">Search</span>
+          <span class="input-group-text" v-else @click="emitSearch">
+            Search
+          </span>
         </div>
       </div>
     </div>
