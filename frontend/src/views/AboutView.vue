@@ -1,10 +1,14 @@
 <template>
-  <main class="about">
+  <main id="about">
     <div class="container">
       <div class="row">
         <div class="col">
           <TitleComponent text="About" />
-          <p>This app allows searching spotify either by manually typing your query if speech recognition is not supported, or by using your voice to search for albums and tracks.</p>
+          <p>
+            This app allows searching spotify either by manually typing your
+            query if speech recognition is not supported or by using your voice
+            to search for albums and tracks.
+          </p>
         </div>
       </div>
     </div>

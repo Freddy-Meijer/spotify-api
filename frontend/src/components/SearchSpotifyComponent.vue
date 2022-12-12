@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import {ref} from "vue"
+import { ref } from "vue";
 import { useSpotifyStore } from "@/stores/spotify";
-const  spotifyStore = useSpotifyStore()
+
+const spotifyStore = useSpotifyStore();
 
 const emit = defineEmits<{
   (e: "recognition-result", searchString: string): void;
 }>();
 
 const speechRecognitionSupported = ref<boolean>(true);
-const {webkitSpeechRecognition, SpeechRecognition} = (window as any)
+const { webkitSpeechRecognition, SpeechRecognition } = window as any;
 
 const recognition = ref();
 const result = ref<string>("");
 let listening = ref<boolean>(false);
+const input = ref(null);
 
 if ("SpeechRecognition" in window) {
   recognition.value = new SpeechRecognition();
@@ -47,6 +49,15 @@ const emitSearch = () => {
   });
 };
 
+const submitSearch = (e: Event) => {
+  e.preventDefault();
+  if (input.value.value !== "") {
+    result.value = input.value.value;
+    emitSearch();
+  }
+  result.value = "";
+};
+
 if (recognition.value) {
   recognition.value.onresult = (event: any) => {
     const transcript = event.results[0][0].transcript;
@@ -65,21 +76,31 @@ if (recognition.value) {
   <div id="speech-recognition" v-if="spotifyStore.isAuthenticated">
     <h3>Search</h3>
     <div class="supported">
-      <div class="input-group mb-3">
+      <form @submit="submitSearch">
         <div class="input-group mb-3">
-          <input type="text" name="search-input" id="search-input" class="form-control" v-model="result" />
-          <span
-            class="input-group-text"
-            v-if="speechRecognitionSupported"
-            @click="listening ? stopRecognition() : startRecognition()"
-          >
-            {{ listening ? "Cancel" : "Voice Search" }}
-          </span>
-          <span class="input-group-text" v-else @click="emitSearch">
-            Search
-          </span>
+          <div class="input-group mb-3">
+            <input
+              ref="input"
+              type="text"
+              name="search-input"
+              id="search-input"
+              class="form-control"
+              v-model="result"
+              placeholder="Enter something and press enter or use Voice Search"
+            />
+            <span
+              class="input-group-text"
+              v-if="speechRecognitionSupported"
+              @click="listening ? stopRecognition() : startRecognition()"
+            >
+              {{ listening ? "Cancel" : "Voice Search" }}
+            </span>
+            <span class="input-group-text" v-else @click="emitSearch">
+              Search
+            </span>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -89,6 +110,7 @@ if (recognition.value) {
 
 #speech-recognition {
   padding-top: 2rem;
+
   h3 {
     color: $spotify-green;
   }

@@ -1,23 +1,13 @@
 <script setup lang="ts">
 import axios from "axios";
-import {onBeforeMount, ref, watchEffect} from "vue";
+import { onBeforeMount, ref, watchEffect } from "vue";
 import { useSpotifyStore } from "@/stores/spotify";
-import ListResults from "@/components/ListResults.vue";
+import ListItems from "@/components/ListItems.vue";
 
 const spotifyStore = useSpotifyStore();
 
 const accessToken = ref<string>("");
 const refreshToken = ref<string>("");
-
-const login = () => {
-  location.href = "http://localhost:3000/spotify_login";
-};
-
-const logout =() => {
-  document.cookie = "spotify=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  spotifyStore.$reset()
-
-};
 
 const search = async (searchString: string) => {
   const Q = `?q=${searchString}&type=album,artist,track&limit=20`;
@@ -34,7 +24,7 @@ const search = async (searchString: string) => {
       });
     }
   } catch (error: any) {
-    console.log(error);
+    console.warn("Unable to get results:", error);
     if (error.response.data.error.status === 401) {
       const updated = await updateToken();
       if (updated) {
@@ -60,8 +50,8 @@ const updateToken = async () => {
 };
 
 watchEffect(() => {
-  const searchString = spotifyStore.getSearchString
-  if (searchString !== '') search(searchString)
+  const searchString = spotifyStore.getSearchString;
+  if (searchString !== "") search(searchString);
 });
 
 onBeforeMount(async () => {
@@ -83,18 +73,7 @@ onBeforeMount(async () => {
 
 <template>
   <div id="spotify">
-    <div
-      class="btn btn-primary"
-      @click="spotifyStore.isAuthenticated ? logout() : login()"
-    >
-      {{
-        spotifyStore.isAuthenticated ? "Logout of Spotify" : "Login to Spotify "
-      }}
-    </div>
-    <ListResults
-      :results="spotifyStore.getSearchResults"
-      v-if="Object.keys(spotifyStore.getSearchResults).length"
-    />
+    <ListItems type="" :items="spotifyStore.getSearchResults" />
   </div>
 </template>
 

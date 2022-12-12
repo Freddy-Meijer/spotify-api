@@ -1,8 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
-  text: string
-}>()
-
+  text: string;
+}>();
 </script>
 
 <template>
@@ -11,20 +10,19 @@ const props = defineProps<{
   </transition>
 </template>
 
-
 <style lang="scss" scoped>
 @import "@/assets/variables.scss";
-  h1 {
-    color: $spotify-green;
-    padding: 2rem 0;
-  }
+h1 {
+  color: $spotify-green;
+  padding: 2rem 0;
+}
 
 //  transitions
-  .title-enter-from {
-    opacity: 0;
-    transform: translateY(-2rem);
-  }
-  .title-enter-active {
-    transition: all .5s ease;
-  }
+.title-enter-from {
+  opacity: 0;
+  transform: translateY(-2rem);
+}
+.title-enter-active {
+  transition: all 0.5s ease;
+}
 </style>
