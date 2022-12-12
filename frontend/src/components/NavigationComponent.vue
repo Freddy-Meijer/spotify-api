@@ -8,7 +8,7 @@ const handleClick = () => {
       "spotify=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     spotifyStore.$reset();
   } else {
-    window.location.href = "http://localhost:3000/spotify_login";
+    window.location.href = "http://localhost:3000/api/spotify_login";
   }
 };
 </script>

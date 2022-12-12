@@ -10,5 +10,10 @@ html, body {
   #wrapper {
     background-color: rgb(25, 20, 20);
     min-height: 100vh;
+
+    .form-control:focus {
+      border: none;
+      box-shadow: unset;
+    }
   }
 }

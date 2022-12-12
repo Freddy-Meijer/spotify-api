@@ -78,27 +78,25 @@ if (recognition.value) {
     <div class="supported">
       <form @submit="submitSearch">
         <div class="input-group mb-3">
-          <div class="input-group mb-3">
-            <input
-              ref="input"
-              type="text"
-              name="search-input"
-              id="search-input"
-              class="form-control"
-              v-model="result"
-              placeholder="Enter something and press enter or use Voice Search"
-            />
-            <span
-              class="input-group-text"
-              v-if="speechRecognitionSupported"
-              @click="listening ? stopRecognition() : startRecognition()"
-            >
-              {{ listening ? "Cancel" : "Voice Search" }}
-            </span>
-            <span class="input-group-text" v-else @click="emitSearch">
-              Search
-            </span>
-          </div>
+          <input
+            ref="input"
+            type="text"
+            name="search-input"
+            id="search-input"
+            class="form-control"
+            v-model="result"
+            placeholder="Enter something and press enter or use Voice Search"
+          />
+          <span
+            class="input-group-text"
+            v-if="speechRecognitionSupported"
+            @click="listening ? stopRecognition() : startRecognition()"
+          >
+            {{ listening ? "Cancel" : "Voice Search" }}
+          </span>
+          <span class="input-group-text" v-else @click="emitSearch">
+            Search
+          </span>
         </div>
       </form>
     </div>

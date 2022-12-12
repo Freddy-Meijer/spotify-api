@@ -37,7 +37,7 @@ const search = async (searchString: string) => {
 const updateToken = async () => {
   console.info("refreshing token");
   try {
-    const newToken = await axios.post("http://localhost:3000/refresh_token", {
+    const newToken = await axios.post("http://localhost:3000/api/refresh_token", {
       refresh_token: refreshToken,
     });
     accessToken.value = newToken.data.access_token;
