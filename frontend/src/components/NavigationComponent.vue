@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useSpotifyStore } from "@/stores/spotify";
-
 const spotifyStore = useSpotifyStore();
 
 const handleClick = () => {
@@ -35,7 +34,7 @@ const handleClick = () => {
           </ul>
           <button class="btn btn-primary" @click="handleClick">
             {{
-              spotifyStore.isAuthenticated
+              spotifyStore.authenticated
                 ? "Logout of Spotify"
                 : "Login to Spotify"
             }}
