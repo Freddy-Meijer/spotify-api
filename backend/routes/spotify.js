@@ -58,6 +58,28 @@ router.post('/refresh_token', async (req, res) => {
     }
 })
 
+router.post('/user', async (req, res) => {
+    let token;
+
+    try {
+        token = req.body.token
+    } catch (e) {
+        res.status(400).send({error: e, message: "Access token is required"})
+    }
+    try {
+        const userData = await axios.get('https://api.spotify.com/v1/me', {
+            "headers": {
+                "Authorization": 'Bearer ' + token,
+                "Content-Type": "application/json",
+            }
+        })
+        res.send(userData.data)
+    } catch (e) {
+        console.error('Could not get user info:', e)
+        res.send(e.data)
+    }
+})
+
 module.exports = {
     router
 }

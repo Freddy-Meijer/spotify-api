@@ -4,7 +4,6 @@ const props = defineProps<{
 }>();
 
 import { useSpotifyStore } from "@/stores/spotify";
-
 const spotifyStore = useSpotifyStore();
 
 const getImgSrc = (key: string, item: object) => {

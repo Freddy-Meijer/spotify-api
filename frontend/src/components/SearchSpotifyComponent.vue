@@ -14,7 +14,7 @@ const { webkitSpeechRecognition, SpeechRecognition } = window as any;
 const recognition = ref();
 const result = ref<string>("");
 let listening = ref<boolean>(false);
-const input = ref(null);
+const search = ref(null);
 
 if ("SpeechRecognition" in window) {
   recognition.value = new SpeechRecognition();
@@ -28,6 +28,7 @@ const startRecognition = () => {
   try {
     recognition.value.start();
     listening.value = true;
+    search.value.disabled = true;
   } catch (e) {
     console.log("Could not start recognition", e);
   }
@@ -37,6 +38,7 @@ const stopRecognition = () => {
   try {
     recognition.value.stop();
     listening.value = false;
+    search.value.disabled = false
   } catch (e) {
     console.log("Could not stop recognition", e);
   }
@@ -47,12 +49,12 @@ const emitSearch = () => {
   spotifyStore.$patch({
     searchString: result.value,
   });
+  result.value = ''
 };
 
 const submitSearch = (e: Event) => {
   e.preventDefault();
-  if (input.value.value !== "") {
-    result.value = input.value.value;
+  if (result.value !== "") {
     emitSearch();
   }
   result.value = "";
@@ -75,11 +77,12 @@ if (recognition.value) {
 <template>
   <div id="speech-recognition" v-if="spotifyStore.isAuthenticated">
     <h3>Search</h3>
-    <div class="supported">
+    <h4></h4>
+    <div class="search">
       <form @submit="submitSearch">
         <div class="input-group mb-3">
           <input
-            ref="input"
+            ref="search"
             type="text"
             name="search-input"
             id="search-input"
@@ -87,13 +90,15 @@ if (recognition.value) {
             v-model="result"
             placeholder="Enter something and press enter or use Voice Search"
           />
+
           <span
             class="input-group-text"
-            v-if="speechRecognitionSupported"
+            v-if="speechRecognitionSupported && !result"
             @click="listening ? stopRecognition() : startRecognition()"
           >
             {{ listening ? "Cancel" : "Voice Search" }}
           </span>
+
           <span class="input-group-text" v-else @click="emitSearch">
             Search
           </span>
@@ -114,11 +119,11 @@ if (recognition.value) {
   }
 
   .input-group {
-    input {
-    }
-
     .input-group-text {
       cursor: pointer;
+      min-width: 121px;
+      display: inline-block;
+      text-align: center;
     }
   }
 }

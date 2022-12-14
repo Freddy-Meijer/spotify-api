@@ -13,10 +13,22 @@ const spotifyStore = useSpotifyStore();
       <div class="row">
         <div class="col">
           <TitleComponent text="Home" />
+
           <p v-if="!spotifyStore.isAuthenticated">
             Login to spotify to start your search
           </p>
-          <p v-else>You're all set, lets do some searches</p>
+
+          <template v-else>
+            <h3>
+              Welcome back
+              {{
+                spotifyStore.user.display_name
+                  ? spotifyStore.user.display_name
+                  : spotifyStore.user.email
+              }}!
+            </h3>
+            <p>Lets do some searches</p>
+          </template>
           <SearchSpotifyComponent v-if="spotifyStore.authenticated" />
           <SpotifyComponent />
         </div>
@@ -37,6 +49,6 @@ const spotifyStore = useSpotifyStore();
 
 .components-enter-active,
 .switch-enter-active {
-  transition: all 0.5s ease;
+  transition: all 1s ease;
 }
 </style>

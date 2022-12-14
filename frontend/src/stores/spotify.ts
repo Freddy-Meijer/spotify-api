@@ -5,6 +5,7 @@ export const useSpotifyStore = defineStore("spotify", {
     authenticated: false,
     searchString: "",
     searchResults: {},
+    user: {},
   }),
   getters: {
     isAuthenticated: (state) => state.authenticated,

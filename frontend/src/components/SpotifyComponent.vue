@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import axios from "axios";
-import { onBeforeMount, ref, watchEffect } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import { useSpotifyStore } from "@/stores/spotify";
 import ListItems from "@/components/ListItems.vue";
 
@@ -9,18 +9,29 @@ const spotifyStore = useSpotifyStore();
 const accessToken = ref<string>("");
 const refreshToken = ref<string>("");
 
+const getUser = async (token: string) => {
+  try {
+  const { data } = await axios.post('http://localhost:3000/api/user', {token})
+  spotifyStore.$patch({
+    user: data,
+  })
+  } catch (e) {
+    console.warn("unable to fetch user data", e)
+  }
+}
+
 const search = async (searchString: string) => {
   const Q = `?q=${searchString}&type=album,artist,track&limit=20`;
   try {
-    const results = await axios.get("https://api.spotify.com/v1/search" + Q, {
+    const { data } = await axios.get("https://api.spotify.com/v1/search" + Q, {
       headers: {
         Authorization: `Bearer ${accessToken.value}`,
         "Content-Type": "application/json",
       },
     });
-    if (results) {
+    if (data) {
       spotifyStore.$patch({
-        searchResults: results.data,
+        searchResults: data,
       });
     }
   } catch (error: any) {
@@ -37,22 +48,21 @@ const search = async (searchString: string) => {
 const updateToken = async () => {
   console.info("refreshing token");
   try {
-    const newToken = await axios.post("http://localhost:3000/api/refresh_token", {
+    const { data } = await axios.post("http://localhost:3000/api/refresh_token", {
       refresh_token: refreshToken,
     });
-    accessToken.value = newToken.data.access_token;
+    accessToken.value = data.access_token;
     console.info("successfully updated token");
     return true;
   } catch (e) {
-    console.error("error updating token: ", e);
+    console.error("error updating token: ", e.error.message);
     return false;
   }
 };
 
-watchEffect(() => {
-  const searchString = spotifyStore.getSearchString;
-  if (searchString !== "") search(searchString);
-});
+watch(() => spotifyStore.searchString, (oldValue: string, newValue: string) => {
+  if (spotifyStore.searchString && oldValue !== newValue) search(spotifyStore.searchString)
+})
 
 onBeforeMount(async () => {
   if (document.cookie.includes("spotify=")) {
@@ -64,9 +74,14 @@ onBeforeMount(async () => {
     );
     accessToken.value = spotify.access_token;
     refreshToken.value = spotify.refresh_token;
+    await getUser(accessToken.value);
     spotifyStore.$patch({
       authenticated: true,
     });
+  } else {
+    spotifyStore.$patch({
+      authenticated: false,
+    })
   }
 });
 </script>

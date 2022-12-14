@@ -1,7 +1,7 @@
 const express = require('express')
 require('dotenv').config()
 const cors = require('cors')
-const { router: spotifyRoutes } = require("./spotifyRoutes")
+const { router: spotifyRoutes } = require("./routes/spotify")
 
 const server = express()
 const PORT = 3000
